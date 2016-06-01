@@ -1,13 +1,13 @@
 package ideas.gpl.parser;
 
+import ideas.gpl.GplException;
 import ideas.gpl.bean.Parsable;
 import ideas.gpl.factory.ParsableFactory;
 
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -23,38 +23,44 @@ public class CsvParser<T extends Parsable> implements Parser<T> {
 		infilepath = path;
 	}
 
-	public List<T> read() throws IOException {
+	public List<T> read() throws GplException {
+		Stream<String> lines = null;
+		try {
+			lines = Files.lines(infilepath);
 
-		Stream<String> lines = Files.lines(infilepath);
+			List<T> application = lines.map(factory.mapToParsable).collect(
+					Collectors.toList());
 
-		List<T> application = lines.map(factory.mapToParsable).collect(
-				Collectors.toList());
+			lines.close();
 
-		lines.close();
-
-		return application;
-
-	}
-
-	public Map<String, List<T>> groupByName() throws IOException {
-
-		Stream<String> lines = Files.lines(infilepath);
-
-		Map<String, List<T>> serverApps = lines.map(factory.mapToParsable)
-				.collect(Collectors.groupingBy(T::getName));
-
-		lines.close();
-
-		return serverApps;
+			return application;
+		} catch (IOException | UncheckedIOException e) {
+			throw new GplException(e);
+		} finally {
+			if (lines != null)
+				lines.close();
+		}
 
 	}
 
-	public boolean write(Path path, List<String> lines) throws IOException {
+	public Map<String, List<T>> groupByName() throws GplException {
 
-		Files.write(path, lines, StandardCharsets.UTF_8,
-				StandardOpenOption.CREATE);
+		Stream<String> lines = null;
+		try {
+			lines = Files.lines(infilepath);
 
-		return true;
+			Map<String, List<T>> serverApps = lines.map(factory.mapToParsable)
+					.collect(Collectors.groupingBy(T::getName));
+
+			return serverApps;
+		} catch (IOException | UncheckedIOException e) {
+			throw new GplException(e);
+		} finally {
+			if (lines != null)
+				lines.close();
+		}
 
 	}
+
+	
 }

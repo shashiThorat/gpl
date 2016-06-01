@@ -136,12 +136,7 @@ public class ApplicationRegistry {
 			this.version = version;
 		}
 
-		@Override
-		public String toString() {
-			return "Application [applicationType=" + applicationType
-					+ ", applicationName=" + applicationName + ", version="
-					+ version + "]";
-		}
+		
 
 	}
 

@@ -1,0 +1,10 @@
+Arvind, Hindi, 40
+Arvind, Marathi, 40
+Arvind, English, 40
+Arvind, Maths, 40
+Arvind, History, 40
+Sandy, Hindi, 60
+Sandy, Marathi, 39
+Sandy, English, 20
+Sandy, Maths, 20
+Sandy, History, 40

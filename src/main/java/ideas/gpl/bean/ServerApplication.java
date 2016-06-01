@@ -40,10 +40,5 @@ public class ServerApplication implements Parsable {
 		this.application = application;
 	}
 
-	@Override
-	public String toString() {
-		return "ServerApplication [name=" + name + ", application="
-				+ application + "]";
-	}
-
+	
 }
